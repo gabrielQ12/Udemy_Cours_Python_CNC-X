@@ -23,10 +23,13 @@ class Main(QMainWindow, FORM_CLASS):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.Handel_Buttons()
+        self.NAVIGATE()
 
     def Handel_Buttons(self):
         self.refresh_btn.clicked.connect(self.GET_DATA)
         self.search_btn.clicked.connect(self.SEARCH)
+        self.check_btn.clicked.connect(self.LEVEL)
+        
 
     def GET_DATA(self):
         db = sqlite3.connect("./sqlite/parts.db")
@@ -56,26 +59,23 @@ class Main(QMainWindow, FORM_CLASS):
 
         self.lbl_ref_nbr.setText(str(result_ref_nbr.fetchone()[0]))
         self.lbl_parts_nbr.setText(str(result_parts_nbr.fetchone()[0]))
-        
-        cursor4=db.cursor()
-        cursor5=db.cursor()
-        
-        min_hole='''SELECT MIN(NumberOfHoles), Reference FROM parts_table'''
-        max_hole='''SELECT MAX(NumberOfHoles), Reference FROM parts_table'''
-        
-        result_min_hole=cursor4.execute(min_hole)
-        result_max_hole=cursor5.execute(max_hole)
-        
-        r1=result_min_hole.fetchone()
-        r2=result_max_hole.fetchone()
-        
+
+        cursor4 = db.cursor()
+        cursor5 = db.cursor()
+
+        min_hole = """SELECT MIN(NumberOfHoles), Reference FROM parts_table"""
+        max_hole = """SELECT MAX(NumberOfHoles), Reference FROM parts_table"""
+
+        result_min_hole = cursor4.execute(min_hole)
+        result_max_hole = cursor5.execute(max_hole)
+
+        r1 = result_min_hole.fetchone()
+        r2 = result_max_hole.fetchone()
+
         self.lbl_min_hole.setText(str(r1[0]))
         self.lbl_max_hole.setText(str(r2[0]))
         self.lbl_min_hole_2.setText(str(r1[1]))
         self.lbl_max_hole_2.setText(str(r2[1]))
-        
-        
-        
 
     def SEARCH(self):
         db = sqlite3.connect("./sqlite/parts.db")
@@ -95,6 +95,43 @@ class Main(QMainWindow, FORM_CLASS):
                 self.table.setItem(
                     row_number, column_number, QTableWidgetItem(str(data))
                 )
+
+    def LEVEL(self):
+        db = sqlite3.connect("./sqlite/parts.db")
+        cursor = db.cursor()
+
+        command = """SELECT Reference, PartName, Count FROM parts_table order by Count asc LIMIT 3"""
+
+        result = cursor.execute(command)
+
+        self.table2.setRowCount(0)
+
+        for row_number, row_data in enumerate(result):
+            self.table2.insertRow(row_number)
+            for column_number, data in enumerate(row_data):
+                self.table2.setItem(
+                    row_number, column_number, QTableWidgetItem(str(data))
+                )
+
+
+    def NAVIGATE(self):
+        db = sqlite3.connect("./sqlite/parts.db")
+        cursor = db.cursor()
+
+        command = """SELECT * FROM parts_table"""
+
+        result = cursor.execute(command)
+        val = result.fetchone()
+
+        self.id.setText(str(val[0]))
+        self.reference.setText(str(val[1]))
+        self.part_name.setText(str(val[2]))
+        self.min_area.setText(str(val[3]))
+        self.max_area.setText(str(val[4]))
+        self.number_of_holes.setText(str(val[5]))
+        self.min_diameter.setText(str(val[6]))
+        self.max_diameter.setText(str(val[7]))
+        self.count.setValue(val[8])
 
 
 def main():
