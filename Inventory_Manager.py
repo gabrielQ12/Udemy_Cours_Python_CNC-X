@@ -29,7 +29,7 @@ class Main(QMainWindow, FORM_CLASS):
         self.refresh_btn.clicked.connect(self.GET_DATA)
         self.search_btn.clicked.connect(self.SEARCH)
         self.check_btn.clicked.connect(self.LEVEL)
-        
+        self.update_btn.clicked.connect(self.UPDATE)
 
     def GET_DATA(self):
         db = sqlite3.connect("./sqlite/parts.db")
@@ -113,7 +113,6 @@ class Main(QMainWindow, FORM_CLASS):
                     row_number, column_number, QTableWidgetItem(str(data))
                 )
 
-
     def NAVIGATE(self):
         db = sqlite3.connect("./sqlite/parts.db")
         cursor = db.cursor()
@@ -132,6 +131,38 @@ class Main(QMainWindow, FORM_CLASS):
         self.min_diameter.setText(str(val[6]))
         self.max_diameter.setText(str(val[7]))
         self.count.setValue(val[8])
+
+    def UPDATE(self):
+        db = sqlite3.connect("./sqlite/parts.db")
+        cursor = db.cursor()
+
+        id_ = int(self.id.text())
+        reference_ = self.reference.toPlainText()
+        part_name_ = self.part_name.toPlainText()
+        min_area_ = self.min_area.toPlainText()
+        max_area_ = self.max_area.toPlainText()
+        number_of_holes_ = self.number_of_holes.toPlainText()
+        min_diameter_ = self.min_diameter.toPlainText()
+        max_diameter_ = self.max_diameter.toPlainText()
+        count_ = str(self.count.value())
+
+        row = (
+            reference_,
+            part_name_,
+            min_area_,
+            max_area_,
+            number_of_holes_,
+            min_diameter_,
+            max_diameter_,
+            count_,
+            id_,
+        )
+
+        command = """UPDATE parts_table SET Reference=?,PartName=?,MinArea=?,MaxArea=?,NumberOfHoles=?,MinDiameter=?,MaxDiameter=?,Count=? WHERE ID=?"""
+
+        cursor.execute(command, row)
+
+        db.commit()
 
 
 def main():
