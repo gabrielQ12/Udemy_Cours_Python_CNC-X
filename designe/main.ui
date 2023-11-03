@@ -27,7 +27,7 @@
      <string notr="true">font: 75 italic 16pt &quot;Century Schoolbook L&quot;;</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -218,7 +218,7 @@ color: rgb(190, 115, 255);</string>
        <string>0</string>
       </property>
      </widget>
-     <widget class="QLabel" name="lbl_min_hole_2">
+     <widget class="QLabel" name="lbl_min_hole">
       <property name="geometry">
        <rect>
         <x>670</x>
@@ -252,7 +252,7 @@ color: rgb(190, 115, 255);</string>
        <string>0</string>
       </property>
      </widget>
-     <widget class="QLabel" name="lbl_min_hole_3">
+     <widget class="QLabel" name="lbl_min_hole_2">
       <property name="geometry">
        <rect>
         <x>820</x>
