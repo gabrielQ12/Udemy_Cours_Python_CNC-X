@@ -1,6 +1,3 @@
-
-
-
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import QtWidgets
@@ -15,32 +12,47 @@ from os import path
 
 from PyQt5.uic import loadUiType
 
-FORM_CLASS,_=loadUiType(path.join(path.dirname('__file__'),"./designe/main.ui"))
+FORM_CLASS, _ = loadUiType(path.join(path.dirname("__file__"), "./designe/main.ui"))
 
 import sqlite3
 
 
 class Main(QMainWindow, FORM_CLASS):
-    def __init__(self,parent=None):
+    def __init__(self, parent=None):
         super(Main, self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.Handel_Buttons()
-        
-        
+
     def Handel_Buttons(self):
-        pass
-        
-        
-        
-        
-        
+        self.refresh_btn.clicked.connect(self.GET_DATA)
+
+    def GET_DATA(self):
+        db = sqlite3.connect("./sqlite/parts.db")
+        cursor = db.cursor()
+
+        command = """SELECT * FROM parts_table"""
+
+        result = cursor.execute(command)
+
+        self.table.setRowCount(0)
+
+        for row_number, row_data in enumerate(result):
+            self.table.insertRow(row_number)
+            for column_number, data in enumerate(row_data):
+                self.table.setItem(
+                    row_number, column_number, QTableWidgetItem(str(data))
+                )
+
+        ## la le code
+
+
 def main():
-    app=QApplication(sys.argv)
-    window=Main()
+    app = QApplication(sys.argv)
+    window = Main()
     window.show()
     app.exec_()
-    
-    
-if __name__=='__main__':
+
+
+if __name__ == "__main__":
     main()
