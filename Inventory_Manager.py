@@ -30,6 +30,7 @@ class Main(QMainWindow, FORM_CLASS):
         self.search_btn.clicked.connect(self.SEARCH)
         self.check_btn.clicked.connect(self.LEVEL)
         self.update_btn.clicked.connect(self.UPDATE)
+        self.delete_btn.clicked.connect(self.DELETE)
 
     def GET_DATA(self):
         db = sqlite3.connect("./sqlite/parts.db")
@@ -161,6 +162,18 @@ class Main(QMainWindow, FORM_CLASS):
         command = """UPDATE parts_table SET Reference=?,PartName=?,MinArea=?,MaxArea=?,NumberOfHoles=?,MinDiameter=?,MaxDiameter=?,Count=? WHERE ID=?"""
 
         cursor.execute(command, row)
+
+        db.commit()
+
+    def DELETE(self):
+        db = sqlite3.connect("./sqlite/parts.db")
+        cursor = db.cursor()
+
+        d = self.id.text()
+
+        command = """DELETE FROM parts_table WHERE ID=?"""
+
+        cursor.execute(command,d)
 
         db.commit()
 
