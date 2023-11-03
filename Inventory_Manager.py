@@ -12,8 +12,7 @@ from os import path
 
 from PyQt5.uic import loadUiType
 
-FORM_CLASS, _ = loadUiType(path.join(path.dirname("__file__"), "./designe/main.ui"))
-
+FORM_CLASS, _ = loadUiType("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/designe/main.ui")
 import sqlite3
 
 
@@ -31,9 +30,10 @@ class Main(QMainWindow, FORM_CLASS):
         self.check_btn.clicked.connect(self.LEVEL)
         self.update_btn.clicked.connect(self.UPDATE)
         self.delete_btn.clicked.connect(self.DELETE)
+        self.add_btn.clicked.connect(self.ADD)
 
     def GET_DATA(self):
-        db = sqlite3.connect("./sqlite/parts.db")
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
         cursor = db.cursor()
 
         command = """SELECT * FROM parts_table"""
@@ -79,7 +79,7 @@ class Main(QMainWindow, FORM_CLASS):
         self.lbl_max_hole_2.setText(str(r2[1]))
 
     def SEARCH(self):
-        db = sqlite3.connect("./sqlite/parts.db")
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
         cursor = db.cursor()
 
         nbr = int(self.count_filter_txt.text())
@@ -98,7 +98,7 @@ class Main(QMainWindow, FORM_CLASS):
                 )
 
     def LEVEL(self):
-        db = sqlite3.connect("./sqlite/parts.db")
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
         cursor = db.cursor()
 
         command = """SELECT Reference, PartName, Count FROM parts_table order by Count asc LIMIT 3"""
@@ -115,7 +115,7 @@ class Main(QMainWindow, FORM_CLASS):
                 )
 
     def NAVIGATE(self):
-        db = sqlite3.connect("./sqlite/parts.db")
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
         cursor = db.cursor()
 
         command = """SELECT * FROM parts_table"""
@@ -134,7 +134,7 @@ class Main(QMainWindow, FORM_CLASS):
         self.count.setValue(val[8])
 
     def UPDATE(self):
-        db = sqlite3.connect("./sqlite/parts.db")
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
         cursor = db.cursor()
 
         id_ = int(self.id.text())
@@ -166,14 +166,44 @@ class Main(QMainWindow, FORM_CLASS):
         db.commit()
 
     def DELETE(self):
-        db = sqlite3.connect("./sqlite/parts.db")
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
         cursor = db.cursor()
 
         d = self.id.text()
 
         command = """DELETE FROM parts_table WHERE ID=?"""
 
-        cursor.execute(command,d)
+        cursor.execute(command, d)
+
+        db.commit()
+
+    def ADD(self):
+        db = sqlite3.db = sqlite3.connect("/home/gabriel/Bureau/projet_python/Udemy_Cours_Python_CNC-X/sqlite/parts.db")
+        cursor = db.cursor()
+
+        reference_ = self.reference.toPlainText()
+        part_name_ = self.part_name.toPlainText()
+        min_area_ = self.min_area.toPlainText()
+        max_area_ = self.max_area.toPlainText()
+        number_of_holes_ = self.number_of_holes.toPlainText()
+        min_diameter_ = self.min_diameter.toPlainText()
+        max_diameter_ = self.max_diameter.toPlainText()
+        count_ = str(self.count.value())
+
+        command = """INSERT INTO parts_table  (Reference,PartName,MinArea,MaxArea,NumberOfHoles,MinDiameter,MaxDiameter,Count) VALUES (?, ?, ?, ?, ?, ? ,? ,?)"""
+
+        values = (
+            reference_,
+            part_name_,
+            min_area_,
+            max_area_,
+            number_of_holes_,
+            min_diameter_,
+            max_diameter_,
+            count_,
+        )
+
+        cursor.execute(command, values)
 
         db.commit()
 
